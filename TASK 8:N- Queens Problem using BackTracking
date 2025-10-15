@@ -1,0 +1,48 @@
+N = 4
+
+def print_board(board):
+    for row in board:
+        print(" ".join("Q" if x == 1 else "." for x in row))
+    print()
+
+def is_safe(board, row, col):
+    # Check column
+    for i in range(row):
+        if board[i][col] == 1:
+            return False
+
+    # Check upper left diagonal
+    i, j = row, col
+    while i >= 0 and j >= 0:
+        if board[i][j] == 1:
+            return False
+        i -= 1
+        j -= 1
+
+    # Check upper right diagonal
+    i, j = row, col
+    while i >= 0 and j < N:
+        if board[i][j] == 1:
+            return False
+        i -= 1
+        j += 1
+
+    return True
+
+def solve(board, row):
+    if row == N:
+        print_board(board)
+        return True
+
+    for col in range(N):
+        if is_safe(board, row, col):
+            board[row][col] = 1
+            solve(board, row + 1)
+            board[row][col] = 0  # Backtrack
+
+    return False
+
+# Initialize board
+board = [[0] * N for _ in range(N)]
+print("Safe arrangements of 4 Queens on 4x4 board:\n")
+solve(board, 0)
