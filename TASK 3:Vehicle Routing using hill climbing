@@ -1,0 +1,34 @@
+import random
+cities = ["Depot", "A", "B", "C", "D"]
+graph = [
+    [0, 3, 6, 8, 7],
+    [3, 0, 3, 5, 5],
+    [6, 3, 0, 6, 3],
+    [8, 5, 6, 0, 7],
+    [7, 5, 3, 7, 0],
+ 
+]
+def dist(route):
+    return graph[0][route[0]] + sum(graph[route[i]][route[i+1]] for i in range(len(route)-1)) + graph[route[-1]][0]
+def neighbors(route):
+    for i in range(len(route)):
+        for j in range(i+1, len(route)):
+            r = route[:]; r[i], r[j] = r[j], r[i]
+            yield r
+def hill_climb():
+    route = list(range(1, len(cities)))
+    random.shuffle(route)
+    cost = dist(route)
+    while True:
+        for n in neighbors(route):
+            c = dist(n)
+            if c < cost:
+                route, cost = n, c
+                break
+        else:
+            break
+    return route, cost
+if __name__ == "__main__":
+    r, c = hill_climb()
+    print("Route: Depot ->", " -> ".join(cities[i] for i in r), "-> Depot")
+    print("Distance:", round(c,2))
