@@ -1,0 +1,39 @@
+class RobotWorkshop:
+    def __init__(self):
+        self.robot_location = 'A'
+        self.ladder_location = 'B'
+        self.tool_location = 'C'
+        self.robot_on_ladder = False
+        self.robot_has_tool = False
+
+    def move_to(self, location):
+        print(f"Robot moves from {self.robot_location} to {location}.")
+        self.robot_location = location
+
+    def pick_ladder(self):
+        if self.robot_location == self.ladder_location:
+            print("Robot picks up the ladder.")
+            self.robot_on_ladder = True
+        else:
+            print("Ladder not found here.")
+
+    def fetch_tool(self):
+        if self.robot_location == self.tool_location and self.robot_on_ladder:
+            print("Robot climbs ladder and picks up the tool.")
+            self.robot_has_tool = True
+        else:
+            print("Cannot reach tool without ladder or at wrong location.")
+
+    def task_status(self):
+        if self.robot_has_tool:
+            print("Goal achieved: Robot has fetched the tool successfully!")
+        else:
+            print("Task incomplete.")
+
+# Simulation
+robot = RobotWorkshop()
+robot.move_to('B')
+robot.pick_ladder()
+robot.move_to('C')
+robot.fetch_tool()
+robot.task_status()
