@@ -1,0 +1,30 @@
+graph = {
+    'Chennai': ['Bangalore', 'Hyderabad'],
+    'Bangalore': ['Mumbai', 'Goa'],
+    'Hyderabad': ['Nagpur'],
+    'Mumbai': ['Surat'],
+    'Goa': [],
+    'Nagpur': ['Raipur'],
+    'Surat': [],
+    'Raipur': ['Kolkata'],
+    'Kolkata': []
+}
+
+def affected_cities(graph, start):
+    visited = set()
+    result = []
+
+    def dfs(city):
+        for neighbor in graph.get(city, []):
+            if neighbor not in visited:
+                visited.add(neighbor)
+                result.append(neighbor)
+                dfs(neighbor)
+
+    visited.add(start)
+    dfs(start)
+    return result
+
+start_city = 'Chennai'
+impacted = affected_cities(graph, start_city)
+print("Cities that may be affected by the disturbance:", impacted)
