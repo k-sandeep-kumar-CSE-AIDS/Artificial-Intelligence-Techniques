@@ -1,0 +1,110 @@
+import math
+
+# Display board
+def print_board(b):
+    for row in b:
+        print(" | ".join(row))
+        print("-" * 5)
+
+# Check winner
+def check_winner(b):
+    for row in b:
+        if row[0] == row[1] == row[2] != " ":
+            return row[0]
+    for col in range(3):
+        if b[0][col] == b[1][col] == b[2][col] != " ":
+            return b[0][col]
+    if b[0][0] == b[1][1] == b[2][2] != " ":
+        return b[0][0]
+    if b[0][2] == b[1][1] == b[2][0] != " ":
+        return b[0][2]
+    return None
+
+# Check if moves left
+def is_moves_left(b):
+    for row in b:
+        if " " in row:
+            return True
+    return False
+
+# Minimax function
+def minimax(b, depth, is_max):
+    winner = check_winner(b)
+    if winner == "O":  # AI wins
+        return 10 - depth
+    if winner == "X":  # Human wins
+        return depth - 10
+    if not is_moves_left(b):  # Draw
+        return 0
+
+    if is_max:  # AI's move
+        best = -math.inf
+        for i in range(3):
+            for j in range(3):
+                if b[i][j] == " ":
+                    b[i][j] = "O"
+                    best = max(best, minimax(b, depth + 1, False))
+                    b[i][j] = " "
+        return best
+    else:  # Human's move
+        best = math.inf
+        for i in range(3):
+            for j in range(3):
+                if b[i][j] == " ":
+                    b[i][j] = "X"
+                    best = min(best, minimax(b, depth + 1, True))
+                    b[i][j] = " "
+        return best
+
+# Find best move for AI
+def find_best_move(b):
+    best_val = -math.inf
+    best_move = (-1, -1)
+    for i in range(3):
+        for j in range(3):
+            if b[i][j] == " ":
+                b[i][j] = "O"
+                move_val = minimax(b, 0, False)
+                b[i][j] = " "
+                if move_val > best_val:
+                    best_val = move_val
+                    best_move = (i, j)
+    return best_move
+
+# Game loop
+def play_game():
+    board = [[" " for _ in range(3)] for _ in range(3)]
+    print("You are X, AI is O")
+    print_board(board)
+
+    for _ in range(9):
+        # Human move
+        row = int(input("Enter row (0-2): "))
+        col = int(input("Enter col (0-2): "))
+        if board[row][col] != " ":
+            print("Invalid move, try again.")
+            continue
+        board[row][col] = "X"
+        print_board(board)
+
+        if check_winner(board):
+            print("You win!")
+            return
+        if not is_moves_left(board):
+            print("It's a draw!")
+            return
+
+        # AI move
+        print("AI is thinking...")
+        r, c = find_best_move(board)
+        board[r][c] = "O"
+        print_board(board)
+
+        if check_winner(board):
+            print("AI wins!")
+            return
+        if not is_moves_left(board):
+            print("It's a draw!")
+            return
+
+play_game()
